@@ -1,0 +1,59 @@
+---
+title: "Jobs"
+author: "Malaika Handa"
+date: "November 13, 2018"
+output: 
+  html_document:
+    toc:  true
+    toc_float:  true
+    code_folding:  show
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+## Set up
+
+Load the libraries
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+Load the data
+```{r}
+timeline = read_csv("timeline.csv")
+```
+
+## Line Plot
+
+```{r}
+
+```
+
+## Bar Plot
+
+Format the data
+```{r}
+dates = timeline %>%
+  select(applied) %>%
+  count(applied) %>%
+  mutate(applied = mdy(applied)) %>%
+  arrange(applied) %>%
+  mutate(n = cumsum(n))
+```
+
+Plot
+```{r}
+ggplot(data = dates,
+       aes(x = applied,
+           y = n)) +
+  geom_line(size = 1) +
+  geom_point() +
+  labs(title = "Job Applications",
+       y = "# Applications Submitted") +
+  theme(axis.title.x = element_blank())
+```
