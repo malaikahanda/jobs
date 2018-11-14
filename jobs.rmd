@@ -25,20 +25,43 @@ library(lubridate)
 
 Load the data
 ```{r}
-timeline = read_csv("timeline.csv")
-```
-
-## Line Plot
-
-```{r}
-
+jobs = read_csv("jobs.csv")
 ```
 
 ## Bar Plot
 
 Format the data
 ```{r}
-dates = timeline %>%
+types = jobs %>%
+  select(type) %>%
+  count(type) %>%
+  mutate(type = gsub("\\s", "\n", type))
+```
+
+Plot
+```{r}
+ggplot(data = types,
+       aes(x = type %>% reorder(-n),
+           y = n)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Type of Job",
+       x = "Category",
+       y = "Count")
+```
+
+Save
+```{r}
+ggsave(filename = "types.png",
+       width = 8,
+       height = 5,
+       units = "in")
+```
+
+## Line Plot
+
+Format the data
+```{r}
+dates = jobs %>%
   select(applied) %>%
   count(applied) %>%
   mutate(applied = mdy(applied)) %>%
@@ -53,7 +76,16 @@ ggplot(data = dates,
            y = n)) +
   geom_line(size = 1) +
   geom_point() +
+  ylim(c(0, 60)) +
   labs(title = "Job Applications",
        y = "# Applications Submitted") +
   theme(axis.title.x = element_blank())
+```
+
+Save
+```{r}
+ggsave(filename = "time.png",
+       width = 8,
+       height = 5,
+       units = "in")
 ```
